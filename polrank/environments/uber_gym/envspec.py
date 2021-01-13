@@ -64,30 +64,6 @@ def gym_find(rgb_state, color, off_top, off_bot, off_side):
     else:
         return (loc[0] + off_top, loc[1] + off_side)
 
-gym_cut = {
-    # top, bottom, left, right
-    # left right must be at least 1 (because list[:-0] doesn't work)
-    'chopper_command': [56, 42, 8, 1],
-    'space_invaders': [20, 15, 1, 1],
-    'breakout': [32, 15, 8, 8],
-    'pong': [34, 16, 16, 16],
-    'boxing': [36, 33, 28, 28],
-    'seaquest': [45, 35, 8, 1],
-    'kung_fu_master': [95, 52, 8, 1],
-    'atlantis': [0, 98, 1, 1],
-}
-
-gym_enhance = {
-    'chopper_command': [(223, 183, 85), (236, 236, 236), (0, 0, 148)],
-    'space_invaders': [(50, 132, 50)],
-    'breakout': [(200, 72, 72)],
-    'pong': [(236, 236, 236), (92, 286, 92)],
-    'boxing': [],
-    'seaquest': [],
-    'kung_fu_master': [],
-    'atlantis': [(158, 208, 101)],
-}
-
 ### General Abstraction ###
 def get_RL_view(state):
     """ Env returns tuple (stacked states, game RGB)
@@ -110,9 +86,6 @@ def basic_abs(state, name, ret_str=True):
     """ Generic gray-scale, down-sample, and change pixel intensity precision.
     Similar to go-explore abstraction."""
     state = gym_get_RGB(state)
-
-    # import imageio
-    # imageio.imsave('results/n_state.png', cut_state)
 
     size = (18, 14)
     max_pix = 8
@@ -140,9 +113,6 @@ def brkt_abs(state, name, ret_str=True):
     if loc != (-1, -1):
         loc = (loc[1], loc[0])
         cv2.rectangle(state, tuple(loc), (loc[0] + 10, loc[1] + 10), ball_color, -1)
-
-    # import imageio
-    # imageio.imsave('results/n_state.png', state)
 
     abs_state = basic_abs(state, name, ret_str=ret_str)
     return abs_state
