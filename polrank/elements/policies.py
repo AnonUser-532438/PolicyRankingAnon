@@ -18,9 +18,6 @@ def get_pol(name, env, device, **kwargs):
 
     if name[:8] == 'minigrid':
         from environments.minigrid.polspec import get_pol as getter
-    elif name[:3] == 'GYM':
-        name = name[3:]
-        from environments.gym_atari.polspec import get_pol as getter
     elif name[:4] == 'UBER':
         name = name[4:]
         from environments.uber_gym.polspec import get_pol as getter

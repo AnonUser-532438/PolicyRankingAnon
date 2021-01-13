@@ -26,17 +26,13 @@ ALL_ENVS = ['MiniGrid-SimpleCrossingS9N1-v0',
     'MiniGrid-SimpleCrossingS11N5-v0',
     'MiniGrid-LavaCrossingS9N1-v0',
     'CartPole-v0'] + \
-    ['UBER' + game for game in atari_games_clean] + \
-    ['GYM'  + game for game in atari_games]
+    ['UBER' + game for game in atari_games_clean]
 
 def get_env(name, seed, **kwargs):
     if name.startswith('MiniGrid'):
         from environments.minigrid.envspec import get_env as getter
     elif name == 'CartPole-v0':
         from environments.cartpole.envspec import get_env as getter
-    elif name[:3] == 'GYM':
-        name = name[3:]
-        from environments.gym_atari.envspec import get_env as getter
     elif name[:4] == 'UBER':
         name = name[4:]
         from environments.uber_gym.envspec import get_env as getter
