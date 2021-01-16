@@ -128,47 +128,11 @@ def main():
         logger.dump_config()
 
     ### Display results ###
-    # Main results
-    final = False
-    if logger.config['env_name'].startswith('GYM'):
-        from elements.envs import GYM_SHORTCUTS
-        game = GYM_SHORTCUTS[logger.config['env_name']][3:]
-        offsets = {
-            'atlantis': 7656.0,
-            'breakout': 1.47,
-            'pong': -12.77,
-            'space_invaders': 142.8,
-            'kung_fu_master': 221.0,
-            'boxing': -1.84,
-            'seaquest': 58.4,
-            'chopper_command': 581.0,
-        }
-        draw_interpol_results(logger, logger.config['score_types'], 0, [1], x_fracs=True, y_fracs=True, smooth=False,
-            x_name='States Restored (%)', y_names=['Original Reward (%)'], combine_sbfl=final,
-            y_offset=offsets[game])
-        draw_interpol_results(logger, logger.config['score_types'], 4, [1], y_fracs=True,
-            trans_x=lambda x: 1-x, x_name="Policy's Action Taken (% of Steps)",
-            y_names=['Original Reward (%)'], smooth=False, combine_sbfl=final,
-            y_offset=offsets[game])
-    else:
-        draw_interpol_results(logger, logger.config['score_types'], 0, [1], x_fracs=True, y_fracs=True, smooth=False,
-            x_name='States Restored (%)', y_names=['Original Reward (%)'], combine_sbfl=final)
-        draw_interpol_results(logger, logger.config['score_types'], 4, [1], y_fracs=True,
-            trans_x=lambda x: 1-x, x_name="Policy's Action Taken (% of Steps)",
-            y_names=['Original Reward (%)'], smooth=False, combine_sbfl=final)
-
-    # score_histogram(logger, logger.config['score_types'])
-
-    # from visualisation.graphing import cartpole_graphs
-    # cartpole_graphs(logger.config['pol_name'], logger.data['scores'][0], logger.config['score_types'])
-
-    # Extra
-    # draw_interpol_results(logger, logger.config['score_types'], 0, [2, 3], hlines=True)
-    # draw_interpol_results(logger, logger.config['score_types'], 0, [4])
-    # draw_interpol_results(logger, logger.config['score_types'], 4, [2, 3], hlines=True,
-    #     trans_x=lambda x: 1-x, x_name='Proportion of Actions Taken Actively')
-    # draw_interpol_results(logger, logger.config['score_types'], 4, [5],
-    #     trans_x=lambda x: 1-x, x_name='Proportion of Actions Taken Actively')
+    draw_interpol_results(logger, logger.config['score_types'], 0, [1], x_fracs=True, y_fracs=True, smooth=False,
+        x_name='States Restored (%)', y_names=['Original Reward (%)'], combine_sbfl=True)
+    draw_interpol_results(logger, logger.config['score_types'], 4, [1], y_fracs=True,
+        trans_x=lambda x: 1-x, x_name="Policy's Action Taken (% of Steps)",
+        y_names=['Original Reward (%)'], smooth=False, combine_sbfl=True)
 
 if __name__ == '__main__':
     main()
