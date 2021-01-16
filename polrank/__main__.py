@@ -29,22 +29,6 @@ def main():
 
     ### If we're making a visualisation, branch here ###
     if args.task == 'vis':
-        if False:
-            import imageio
-            import os
-            env = logger.config['env']
-            state = env.reset()
-            for _ in range(20):
-                state, _, _, _ = env.step(0)
-            env.vis_type = -1
-            rgb = env.get_RGB(env, state, None, None)
-            raw_abst = env.abst(rgb)
-            import pdb; pdb.set_trace()
-            env.vis_type = 0
-            abst = env.get_RGB(env, state, None, None)
-            imageio.imsave(os.path.join(logger.fileloc, 'pong_rgb.png'), rgb)
-            imageio.imsave(os.path.join(logger.fileloc, 'pong_abs.png'), abst)
-            exit()
         if args.ranking not in logger.data['scores'][0]:
             print("\nNeed to compute ranking {} before doing visualisation!".format(args.ranking))
             exit()
