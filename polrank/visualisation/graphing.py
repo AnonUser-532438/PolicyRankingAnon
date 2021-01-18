@@ -79,17 +79,8 @@ def draw_interpol_results(loggers, score_types, which_x, which_ys,
         # all_xs and all_ys is one for each logger and then one for each score_type
         draw_curves(all_xs, all_ys, x_name, y_name, score_types, hval=hv, sloc=sl, smooth=smooth, combine_sbfl=combine_sbfl)
 
-def smoothing(x, y, spline=False):
+def smoothing(x, y):
     # Make sure x and y are sorted properly first!
-
-    if spline: # Currently fails if 2 x-values are the same
-        from scipy import interpolate
-        smoothness = 0 # Amount of smoothness - 0 is usually enough
-        x_smooth = np.linspace(x.min(), x.max(), 300)
-        tck = interpolate.splrep(x, y, s=smoothness)
-        y_smooth = interpolate.splev(x_smooth, tck, der=0)
-        return x_smooth, y_smooth
-
     window = 3 # Must be odd
     new_y = []
     for i in range(len(y)):
@@ -101,7 +92,6 @@ def smoothing(x, y, spline=False):
 def draw_curves(all_xs, all_ys, x_name, y_name, score_types, hval=None, sloc=None, smooth=False, combine_sbfl=False):
     plt.clf()
 
-    ## Pretty hacky, combines SBFL lines while only taking point which improve on the previous
     if combine_sbfl:
         new_all_xs = []
         new_all_ys = []
@@ -155,10 +145,8 @@ def draw_curves(all_xs, all_ys, x_name, y_name, score_types, hval=None, sloc=Non
             x = [val*100 for val in x]
         ##
 
-        ## Hacky, makes sure non-SBFL lines also only taking point that improve
         if st in ['rand', 'freqVis', 'tarantula', 'ochiai', 'zoltar', 'wongII']:
             x, m_y, std_y = only_improve(x, m_y, std_y)
-        ##
 
         if st == 'rand':
             plt.plot(x, m_y, linestyle='dashed', label=st, color=ST_COLOURS[st], linewidth=3)
@@ -169,11 +157,7 @@ def draw_curves(all_xs, all_ys, x_name, y_name, score_types, hval=None, sloc=Non
         plt.fill_between(x, m_y-std_y, m_y+std_y, color=ST_COLOURS[st], alpha=0.2)
 
     if hval is not None:
-        # plt.plot([0, xmax], [hval, hval], linestyle='dashed', label='baseline')
         plt.axhline(y=hval, xmin=0, xmax=1, linestyle='dotted', label='baseline', color='red')
-
-    # axes = plt.axes()
-    # axes.set_ylim([0, 110])
 
     plt.legend()
     plt.ylabel(y_name, size=17)
@@ -242,35 +226,6 @@ def mean_and_var(all_xs, all_ys):
         st_std_ys.append(final_std)
 
     return st_xs, st_mean_ys, st_std_ys
-
-    # data = [{} for _ in range(len(all_xs[0]))] # score_type x x_val x y_vals
-    # # all_xs: num_loggers x score_types x data
-    # for xss, yss in zip(all_xs, all_ys): # Data from each logger
-    #     for score_type_ind, (xs, ys) in enumerate(zip(xss, yss)): # Each score type
-    #         for x, y in zip(xs, ys): # Each point
-    #             if x in data[score_type_ind]:
-    #                 data[score_type_ind][x].append(y)
-    #             else:
-    #                 data[score_type_ind][x] = [y]
-
-    # st_xs = []
-    # st_mean_ys = []
-    # st_std_ys = []
-    # for st_data in data:
-    #     import pdb; pdb.set_trace()
-    #     st_data = [(x, ys) for x, ys in st_data.items() if len(ys) == n_loggers]
-    #     st_data.sort(key=lambda i: i[0])
-    #     mean_ys = [np.mean(ys) for x, ys in st_data]
-    #     std_ys = [np.std(ys) for x, ys in st_data]
-    #     xs = [x for x, ys in st_data]
-    #     xmax = max(xs)
-    #     import pdb; pdb.set_trace()
-    #     frac_xs = [x/xmax for x in xs]
-    #     st_xs.append(frac_xs)
-    #     st_mean_ys.append(mean_ys)
-    #     st_std_ys.append(std_ys)
-    
-    # return st_xs, st_mean_ys, st_std_ys
 
 def combine_lines(xs, ys, only_improve=False):
     """ Take list of lists for xs and ys (for each score type)
@@ -360,27 +315,3 @@ def cartpole_graphs(fileloc, scores, score_types):
         plt.tight_layout()
         plt.draw()
         plt.savefig(fileloc + str(i) + '.png')
-
-        # plt.clf()
-        # for st in score_types:
-        #     scrs = scores[st]
-        #     xs, ys = [], []
-        #     for s, sc in scrs:
-        #         s = s[1:-1].split(',')
-        #         x = float(s[i])
-        #         xs.append(x)
-        #         ys.append(sc)
-
-        #     diff = max(ys)-min(ys)
-        #     if diff > 0:
-        #         ys = [(i-min(ys))/diff for i in ys]
-        #     else:
-        #         ys = [0 for i in ys]
-        #     plt.scatter(xs, ys, s=2, label=st, color=ST_COLOURS[st])
-
-        # plt.legend()
-        # plt.ylabel('Score', size=17)
-        # plt.xlabel(x_names[i], size=17)
-        # plt.tight_layout()
-        # plt.draw()
-        # plt.savefig(fileloc + str(i) + '_scatter.png')
