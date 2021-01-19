@@ -25,6 +25,11 @@ if env in atari_games_clean:
 else:
     command = tasks[env]
 
+# Run the command and save to a good file name
 os.system("{} -fl {}_0".format(command, env))
+
+# Run subsequent repeats of the command using the same config as the first
+# This is especially useful for score_auto, which will set a balanced condition
+# on-the-fly in the first run.
 for i in range(1, N):
     os.system("{} -fl {}_{} -ll {}_0".format(command, env, i, env))
